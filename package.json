@@ -1,0 +1,36 @@
+{
+  "name": "microstar-chain",
+  "version": "0.0.0",
+  "description": "This module writes, reads, validates, and copies chains of microstar messages. Each message contains the hash of the previous.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "level-librarian": "0.0.3",
+    "microstar-crypto": "0.0.2",
+    "microstar-message": "0.0.0",
+    "pull-level": "^1.2.0",
+    "pull-pairs": "^1.0.0",
+    "pull-stream": "^2.26.0",
+    "ramda": "^0.8.0"
+  },
+  "devDependencies": {
+    "levelup": "^0.19.0",
+    "rimraf": "^2.2.8",
+    "tape": "^3.0.3"
+  },
+  "scripts": {
+    "test": "node test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jtremback/microstar-chain.git"
+  },
+  "author": "jehan.tremback@gmail.com <you@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jtremback/microstar-chain/issues"
+  },
+  "homepage": "https://github.com/jtremback/microstar-chain"
+}

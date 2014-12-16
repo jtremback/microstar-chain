@@ -8,8 +8,8 @@ var r = require('ramda')
 
 module.exports = function (settings) {
   return {
-    write: write.bind(null, settings),
     read: read.bind(null, settings),
+    write: write.bind(null, settings),
     save: save.bind(null, settings)
   }
 }
@@ -30,10 +30,13 @@ module.exports.read = read
 // }
 
 // Formats messages and then writes them to db
-function write (settings, level_opts, callback) {
+function write (settings, template, callback) {
   return pull(
+    pull.map(function (message) {
+      return r.mixin(template || {}, message)
+    }),
     formatMessages(settings),
-    llibrarian.write(settings.db, settings.indexes, level_opts, callback)
+    llibrarian.write(settings.db, settings.indexes, callback)
   )
 }
 
