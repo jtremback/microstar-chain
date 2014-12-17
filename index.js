@@ -37,14 +37,7 @@ function write (settings, template, callback) {
       return r.mixin(template || {}, message)
     }),
     formatMessages(settings),
-    llibrarian.write(settings.db, settings.indexes, callback)
-  )
-}
-
-// Just exposes normal read functionality
-function read (settings, query, callback) {
-  return pull(
-    llibrarian.read(settings.db, query, callback)
+    llibrarian.write(settings, callback)
   )
 }
 
