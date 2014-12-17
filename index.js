@@ -81,7 +81,7 @@ function formatMessages (settings) {
 // Gets previous message and creates a new message in the right format
 function formatMessage (settings, message, callback) {
   // Get previous message from db
-  llibrarian.readOne(settings.db, {
+  llibrarian.readOne(settings, {
     k: ['feed_id', '$latest'],
     v: message.feed_id
   }, function (err, prev) {
