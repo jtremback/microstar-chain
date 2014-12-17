@@ -8,14 +8,15 @@ var r = require('ramda')
 
 module.exports = function (settings) {
   return {
-    read: read.bind(null, settings),
+    read: llibrarian.read.bind(null, settings),
     write: write.bind(null, settings),
-    save: save.bind(null, settings)
+    copy: copy.bind(null, settings)
   }
 }
 
+module.exports.read = llibrarian.read
 module.exports.write = write
-module.exports.read = read
+module.exports.copy = copy
 
 // settings = {
 //   crypto: JS,
