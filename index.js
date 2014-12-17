@@ -53,12 +53,15 @@ function copy (settings, initial, level_opts, callback) {
 // This will stop a stream on the first invalid message
 function validateMessages (settings, initial) {
   return pull(
-    pairs.async(function (a, b, callback) {
+    pairs(function (a, b) {
+      return [a, b]
+    }),
+    pull.mapAsync(function (pair, callback) {
       // If a is null, use supplied initial message
-      mMessage.validate(settings, b, (a || initial), function (err) {
+      mMessage.validate(settings, pair[1], (pair[0] || initial), function (err) {
         if (err) { return callback(err) }
         else {
-          return callback(null, b)
+          return callback(null, pair[1])
         }
       })
     }),
