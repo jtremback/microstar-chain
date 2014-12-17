@@ -43,10 +43,10 @@ function write (settings, template, callback) {
 
 // Saves messages without formatting, but with validation
 // against past messages
-function save (settings, initial, level_opts, callback) {
+function copy (settings, initial, level_opts, callback) {
   return pull(
     validateMessages(settings, initial),
-    llibrarian.write(settings.db, settings.indexes, level_opts, callback)
+    llibrarian.write(settings, callback)
   )
 }
 
