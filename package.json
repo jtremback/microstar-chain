@@ -7,7 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "level-librarian": "0.0.3",
+    "level": "^0.18.0",
+    "level-librarian": "0.0.4",
     "microstar-crypto": "0.0.2",
     "microstar-message": "0.0.0",
     "pull-level": "^1.2.0",
