@@ -18,6 +18,10 @@ module.exports.read = llibrarian.read
 module.exports.write = write
 module.exports.copy = copy
 
+module.exports.indexes = [
+  ['pub_key', 'chain_id', 'sequence']
+]
+
 // settings = {
 //   crypto: JS,
 //   keys: JS,
