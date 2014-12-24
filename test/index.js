@@ -28,17 +28,17 @@ function tests (mChain) {
     content: 'Fa',
     timestamp: 1418804138168,
     type: 'holiday-carols:syllable',
-    feed_id: 'holiday-carols:2014'
+    chain_id: 'holiday-carols:2014'
   }, {
     content: 'La',
-    timestamp: 1418804138168,
+    timestamp: 1418804138169,
     type: 'holiday-carols:syllable',
-    feed_id: 'holiday-carols:2014'
+    chain_id: 'holiday-carols:2014'
   }, {
     content: 'Laa',
-    timestamp: 1418804138168,
+    timestamp: 1418804138170,
     type: 'holiday-carols:syllable',
-    feed_id: 'holiday-carols:2014'
+    chain_id: 'holiday-carols:2014'
   }]
 
   test('write', function (t) {
@@ -50,6 +50,7 @@ function tests (mChain) {
         pull(
           pl.read(db),
           pull.collect(function (err, arr) {
+            debugger
             t.error(err)
             t.deepEqual(arr, dbContents, '.write(db, indexes)')
             t.end()
@@ -63,7 +64,7 @@ function tests (mChain) {
       key: '9GWLN2OmBdXK8tKK0/jP0WxsxF40Qx6lXFXjNilOZC4rglLwUNGg7UiLWUlzBXExyFWxNOiohf8NTRtHEZ1QPQ==',
       value: {
         content: 'Fa',
-        feed_id: 'holiday-carols:2014',
+        chain_id: 'holiday-carols:2014',
         previous: null,
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 0,
@@ -75,7 +76,7 @@ function tests (mChain) {
       key: 'KG/P0BYfYtwD1habhWabfyMkAzfLFLcHfj8hOu8L6ebvMMrq2yDdhrgOjJOxh1Ozfpo4k4BVZeoewTLBXGUz0w==',
       value: {
         content: 'La',
-        feed_id: 'holiday-carols:2014',
+        chain_id: 'holiday-carols:2014',
         previous: null,
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 1,
@@ -87,7 +88,7 @@ function tests (mChain) {
       key: 'qRkq8aMERuTU/Lp+of0vKv5nS3roiUTgcF9WIUWBRrE9NXDFOin8lexIpMYmAwI3CUz5qb+6/a29nAPZWYLWfQ==',
       value: {
         content: 'Laa',
-        feed_id: 'holiday-carols:2014',
+        chain_id: 'holiday-carols:2014',
         previous: null,
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 2,
@@ -96,7 +97,7 @@ function tests (mChain) {
         type: 'holiday-carols:syllable'
       }
     }, {
-      key: 'ÿfeed_id,$latestÿholiday-carols:2014ÿÿ',
+      key: 'ÿchain_id,$latestÿholiday-carols:2014ÿÿ',
       value: 'qRkq8aMERuTU/Lp+of0vKv5nS3roiUTgcF9WIUWBRrE9NXDFOin8lexIpMYmAwI3CUz5qb+6/a29nAPZWYLWfQ=='
     }]
   })

@@ -1,7 +1,7 @@
 'use strict';
 
-var mMessage = require('microstar-message')
-var llibrarian = require('level-librarian')
+var mMessage = require('../microstar-message')
+var llibrarian = require('../level-librarian')
 var pairs = require('pull-pairs')
 var pull = require('pull-stream')
 var r = require('ramda')
@@ -70,20 +70,32 @@ function validateMessages (settings, initial) {
 
 function formatMessages (settings) {
   return pull(
-    pull.asyncMap(function (message, cb) {
-      formatMessage(settings, message, cb)
+    pairs(function (a, b) {
+      if (b) {
+        return [a, b]
+      }
+    }),
+    pull.asyncMap(function (pair, cb) {
+      formatMessage(settings, pair, cb)
     })
   )
 }
 
+// TODO: Get last message from stream not db. only get from db if it is the
+// first message in the stream but it is not the first message in the chain
+
 // Gets previous message and creates a new message in the right format
-function formatMessage (settings, message, callback) {
-  // Get previous message from db
-  llibrarian.readOne(settings, {
-    k: ['pub_key', 'chain_id', 'sequence'],
-    v: [message.content[1].pub_key, message.content[1].chain_id],
-    peek: 'last'
-  }, function (err, prev) {
-    mMessage.create(settings, message, prev, callback)
-  })
+function formatMessage (settings, pair, callback) {
+  if (!pair[0]) {
+    // Get previous message from db
+    llibrarian.readOne(settings, {
+      k: ['pub_key', 'chain_id', 'sequence'],
+      v: [settings.keys.publicKey, pair[1].chain_id],
+      peek: 'last'
+    }, function (err, prev) {
+      mMessage.create(settings, pair[1], prev.value, callback)
+    })
+  } else if (pair[1]) {
+    mMessage.create(settings, pair[1], pair[0], callback)
+  }
 }
