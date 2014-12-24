@@ -35,11 +35,8 @@ module.exports.indexes = [
 // }
 
 // Formats messages and then writes them to db
-function write (settings, template, callback) {
+function write (settings, callback) {
   return pull(
-    pull.map(function (message) {
-      return r.mixin(template || {}, message)
-    }),
     formatMessages(settings),
     llibrarian.write(settings, callback)
   )
