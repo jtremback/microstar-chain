@@ -57,13 +57,10 @@ function validateMessages (settings, initial) {
     pairs(function (a, b) {
       return [a, b]
     }),
-    pull.mapAsync(function (pair, callback) {
+    pull.asyncMap(function (pair, callback) {
       // If a is null, use supplied initial message
       mMessage.validate(settings, pair[1], (pair[0] || initial), function (err) {
-        if (err) { return callback(err) }
-        else {
-          return callback(null, pair[1])
-        }
+        return callback(err, pair[1])
       })
     }),
     // Stop stream on invalid message
