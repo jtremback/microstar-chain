@@ -80,8 +80,9 @@ function formatMessages (settings) {
 function formatMessage (settings, message, callback) {
   // Get previous message from db
   llibrarian.readOne(settings, {
-    k: ['feed_id', '$latest'],
-    v: message.feed_id
+    k: ['pub_key', 'chain_id', 'sequence'],
+    v: [message.content[1].pub_key, message.content[1].chain_id],
+    peek: 'last'
   }, function (err, prev) {
     mMessage.create(settings, message, prev, callback)
   })
