@@ -3,7 +3,7 @@
 var test = require('tape')
 var r = require('ramda')
 var mChain = require('../')
-var mCrypto = require('microstar-crypto')
+var mCrypto = require('../../microstar-crypto')
 var rimraf = require('rimraf')
 var level = require('level')
 var pull = require('pull-stream')
@@ -50,7 +50,6 @@ function tests (mChain) {
         pull(
           pl.read(db),
           pull.collect(function (err, arr) {
-            debugger
             t.error(err)
             t.deepEqual(arr, dbContents, '.write(db, indexes)')
             t.end()
@@ -61,45 +60,52 @@ function tests (mChain) {
 
 
     dbContents = [{
-      key: '9GWLN2OmBdXK8tKK0/jP0WxsxF40Qx6lXFXjNilOZC4rglLwUNGg7UiLWUlzBXExyFWxNOiohf8NTRtHEZ1QPQ==',
+      key: '3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw==',
       value: {
-        content: 'Fa',
         chain_id: 'holiday-carols:2014',
+        content: 'Laa',
+        previous: 'LKMpfcd8RnoZyebGLj3vi+GsfNarHSXKcZH6XPnf1RpOOwgalRuf1nz+jyOzRJ52x+p2EopGn3T7oH/j9fAmZQ==',
+        pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+        sequence: 2,
+        signature: 'av/kuk31yYEk/MzE5bM28VzsGdLAezvQfL2woO9fy7Zr5G3xHGkuyF7yHsqibRdfyjcZV9kSocA0hqIzULJACw==',
+        timestamp: 1418804138170,
+        type: 'holiday-carols:syllable'
+      }
+    }, {
+      key: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==',
+      value: {
+        chain_id: 'holiday-carols:2014',
+        content: 'Fa',
         previous: null,
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 0,
-        signature: '0QdzchEK74ukRqtV5OGx0Jvtzc+ddpOg2x+5MzP0v6B0A64xeBlJB91QjSobSi0y++c9uhq1AYWOaRHbZ+Q/CA==',
+        signature: 'Cs8s0zZgqE/Tp+DCFDXuMYA6mNUtPTFGf//5rENPCx37g3L7BFhz0pBJ06GFK5E1i3C6o5H9BgX/Ltppf5EFBQ==',
         timestamp: 1418804138168,
         type: 'holiday-carols:syllable'
       }
     }, {
-      key: 'KG/P0BYfYtwD1habhWabfyMkAzfLFLcHfj8hOu8L6ebvMMrq2yDdhrgOjJOxh1Ozfpo4k4BVZeoewTLBXGUz0w==',
+      key: 'XfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw==',
       value: {
-        content: 'La',
         chain_id: 'holiday-carols:2014',
-        previous: null,
+        content: 'La',
+        previous: 'jVCpXdW88KASKmZmtANpZURrGVB1YKyDlVO/oCjFalNg7KtfwxjmIkPhOrF9SRcM/MiM9+Wh13TZTOggDsKDzA==',
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 1,
-        signature: '7KvWMmmfuZPVX1jU35IKsduUZILk3z6osVWZACJfObrzMqhN/ByLgj5AWIQb5RroqH1JNxZVstp6SB3vrLbiDA==',
-        timestamp: 1418804138168,
+        signature: 'vlOOUutmdXbty/qM4kUhSmgC7WnJ1Dvoutk9gfPe1sgHpULJxpjG0251nPGkmsPr7wjDtPKm6HPOK2s+1nLaCw==',
+        timestamp: 1418804138169,
         type: 'holiday-carols:syllable'
       }
     }, {
-      key: 'qRkq8aMERuTU/Lp+of0vKv5nS3roiUTgcF9WIUWBRrE9NXDFOin8lexIpMYmAwI3CUz5qb+6/a29nAPZWYLWfQ==',
-      value: {
-        content: 'Laa',
-        chain_id: 'holiday-carols:2014',
-        previous: null,
-        pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 2,
-        signature: 'JQIBYiQekW7Gx3hVUJU9PpG2bKNXj8VglQe/DJ8P3GCd3KODhPiDsH67dtx4rqt5Psgka131TItfbn4jFDZFBQ==',
-        timestamp: 1418804138168,
-        type: 'holiday-carols:syllable'
-      }
+      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ0ÿLWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==ÿ',
+      value: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w=='
     }, {
-      key: 'ÿchain_id,$latestÿholiday-carols:2014ÿÿ',
-      value: 'qRkq8aMERuTU/Lp+of0vKv5nS3roiUTgcF9WIUWBRrE9NXDFOin8lexIpMYmAwI3CUz5qb+6/a29nAPZWYLWfQ=='
+      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿXfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw==ÿ',
+      value: 'XfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw=='
+    }, {
+      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿ3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw==ÿ',
+      value: '3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw=='
     }]
+
   })
 
   test('copy', function (t) {

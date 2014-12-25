@@ -31,7 +31,7 @@ module.exports.indexes = [
 // message = {
 //   content: JSON,
 //   type: String,
-//   feed_id: String
+//   chain_id: String
 // }
 
 // Formats messages and then writes them to db
@@ -69,33 +69,25 @@ function validateMessages (settings, initial) {
 }
 
 function formatMessages (settings) {
-  return pull(
-    pairs(function (a, b) {
-      if (b) {
-        return [a, b]
-      }
-    }),
-    pull.asyncMap(function (pair, cb) {
-      formatMessage(settings, pair, cb)
-    })
-  )
-}
-
-// TODO: Get last message from stream not db. only get from db if it is the
-// first message in the stream but it is not the first message in the chain
-
-// Gets previous message and creates a new message in the right format
-function formatMessage (settings, pair, callback) {
-  if (!pair[0]) {
-    // Get previous message from db
-    llibrarian.readOne(settings, {
-      k: ['pub_key', 'chain_id', 'sequence'],
-      v: [settings.keys.publicKey, pair[1].chain_id],
-      peek: 'last'
-    }, function (err, prev) {
-      mMessage.create(settings, pair[1], prev.value, callback)
-    })
-  } else if (pair[1]) {
-    mMessage.create(settings, pair[1], pair[0], callback)
-  }
+  var last
+  return pull.asyncMap(function (message, callback) {
+    if (!last) {
+      // Get previous message from db
+      llibrarian.readOne(settings, {
+        k: ['pub_key', 'chain_id', 'sequence'],
+        v: [settings.keys.publicKey, message.chain_id],
+        peek: 'last'
+      }, function (err, prev) {
+        mMessage.create(settings, message, prev.value, function (err, message) {
+          last = message
+          callback(err, message)
+        })
+      })
+    } else {
+      mMessage.create(settings, message, last, function (err, message) {
+        last = message
+        callback(err, message)
+      })
+    }
+  })
 }
