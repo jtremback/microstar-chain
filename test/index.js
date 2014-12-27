@@ -2,28 +2,25 @@
 
 var test = require('tape')
 var r = require('ramda')
+var rimraf = require('rimraf')
 var mChain = require('../')
 var mCrypto = require('../../microstar-crypto')
-var rimraf = require('rimraf')
-var level = require('level')
+var level = require('level-test')()
 var pull = require('pull-stream')
 var pl = require('pull-level')
 
-rimraf.sync('./test.db')
-var db = level('./test.db', { valueEncoding: 'json' })
-
 var dbContents
+rimraf.sync('./test.db')
+var db1 = level('./test1.db', { valueEncoding: 'json' })
+
+rimraf.sync('./test2.db')
+var db2 = level('./test2.db', { valueEncoding: 'json' })
 
 mCrypto.keys('h4dfDIR+i3JfCw1T2jKr/SS/PJttebGfMMGwBvhOzS4=', function (err, keys) {
-  tests(mChain({
-    crypto: mCrypto,
-    keys: keys,
-    db: db,
-    indexes: mChain.indexes
-  }))
+  tests(keys)
 })
 
-function tests (mChain) {
+function tests (keys) {
   var messages = [{
     content: 'Fa',
     timestamp: 1418804138168,
@@ -42,13 +39,19 @@ function tests (mChain) {
   }]
 
   test('write', function (t) {
+
     pull(
       pull.values(messages),
-      mChain.write(function (err) {
+      mChain.write({
+        crypto: mCrypto,
+        keys: keys,
+        db: db1,
+        indexes: mChain.indexes
+      }, function (err) {
         t.error(err)
 
         pull(
-          pl.read(db),
+          pl.read(db1),
           pull.collect(function (err, arr) {
             t.error(err)
             t.deepEqual(arr, dbContents, '.write(db, indexes)')
@@ -60,14 +63,26 @@ function tests (mChain) {
 
 
     dbContents = [{
-      key: '3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw==',
+      key: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==',
+      value: {
+        chain_id: 'holiday-carols:2014',
+        content: 'La',
+        previous: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==',
+        pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+        sequence: 1,
+        signature: '/v1TqoggUpzuFx5sJ5jirlQsBOpGQBb1DJwP4ue1S5LzqKXIvZvlFe/WOLjyQTKXkqw9uQo2NH7eJPq4E7HbAQ==',
+        timestamp: 1418804138169,
+        type: 'holiday-carols:syllable'
+      }
+    }, {
+      key: 'GiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA==',
       value: {
         chain_id: 'holiday-carols:2014',
         content: 'Laa',
-        previous: 'LKMpfcd8RnoZyebGLj3vi+GsfNarHSXKcZH6XPnf1RpOOwgalRuf1nz+jyOzRJ52x+p2EopGn3T7oH/j9fAmZQ==',
+        previous: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==',
         pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
         sequence: 2,
-        signature: 'av/kuk31yYEk/MzE5bM28VzsGdLAezvQfL2woO9fy7Zr5G3xHGkuyF7yHsqibRdfyjcZV9kSocA0hqIzULJACw==',
+        signature: '+2r2xOcwEsP/h2inzDYx3OX2jk+03Zjnhp7pdagNcDFAE/fhdTX4Zmdx+Vi+divPumjIvHQYNSzy4qBI9c4dAQ==',
         timestamp: 1418804138170,
         type: 'holiday-carols:syllable'
       }
@@ -84,41 +99,33 @@ function tests (mChain) {
         type: 'holiday-carols:syllable'
       }
     }, {
-      key: 'XfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'La',
-        previous: 'jVCpXdW88KASKmZmtANpZURrGVB1YKyDlVO/oCjFalNg7KtfwxjmIkPhOrF9SRcM/MiM9+Wh13TZTOggDsKDzA==',
-        pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 1,
-        signature: 'vlOOUutmdXbty/qM4kUhSmgC7WnJ1Dvoutk9gfPe1sgHpULJxpjG0251nPGkmsPr7wjDtPKm6HPOK2s+1nLaCw==',
-        timestamp: 1418804138169,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
       key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ0ÿLWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==ÿ',
       value: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w=='
     }, {
-      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿXfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw==ÿ',
-      value: 'XfTJe2J1lrYOTRJOQQh6UVsL3QFT2x3p7kpL6oPqpB4geGrg07FuLDRnNGtSKvIjGvA2FKanK62+METHMvn9Aw=='
+      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿ31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==ÿ',
+      value: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g=='
     }, {
-      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿ3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw==ÿ',
-      value: '3NPUITtu1D2sXKCYafDXPJVfl+Zii5WsL51adDjgUep+7kwEZ5LZwPdCBqxjvEzHccWtKsyTbNPSBxVtfef3Jw=='
+      key: 'ÿpub_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿGiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA==ÿ',
+      value: 'GiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA=='
     }]
-
   })
 
   test('copy', function (t) {
-    var initial = dbContents[0].value
-    var values = [dbContents[1].value, dbContents[2].value]
+    var initial = dbContents[2].value
+    var values = [dbContents[2].value, dbContents[0].value, dbContents[1].value]
 
     pull(
       pull.values(values),
-      mChain.copy(initial, function (err) {
+      mChain.copy({
+        crypto: mCrypto,
+        keys: keys,
+        db: db2,
+        indexes: mChain.indexes
+      }, initial, function (err) {
         t.error(err)
 
         pull(
-          pl.read(db),
+          pl.read(db2),
           pull.collect(function (err, arr) {
             t.error(err)
             t.deepEqual(arr, dbContents, '.write(db, indexes)')

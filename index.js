@@ -47,6 +47,9 @@ function write (settings, callback) {
 function copy (settings, initial, callback) {
   return pull(
     validateMessages(settings, initial),
+    pull.asyncMap(function (message, callback) {
+      mMessage.makeDoc(settings, message, callback)
+    }),
     llibrarian.write(settings, callback)
   )
 }
@@ -57,14 +60,23 @@ function validateMessages (settings, initial) {
     pairs(function (a, b) {
       return [a, b]
     }),
+    // Filter out pair that has missing b
+    pull.filter(function (pair) {
+      return pair[1]
+    }),
     pull.asyncMap(function (pair, callback) {
-      // If a is null, use supplied initial message
-      mMessage.validate(settings, pair[1], (pair[0] || initial), function (err) {
+      // If a is null (first in stream), compare b with initial
+      if (!pair[0]) {
+        if (mMessage.identical(pair[1], initial)) {
+          return callback(null, pair[1])
+        } else {
+          return callback(new Error('First message in copied stream does not match.'))
+        }
+      }
+      mMessage.validate(settings, pair[1], pair[0], function (err) {
         return callback(err, pair[1])
       })
-    }),
-    // Stop stream on invalid message
-    pull.take(r.identity)
+    })
   )
 }
 
