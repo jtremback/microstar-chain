@@ -55,7 +55,7 @@ function copy (settings, initial, callback) {
 }
 
 // This will stop a stream on the first invalid message
-function validateMessages (settings, initial) {
+function validateMessages (settings) {
   return pull(
     pairs(function (a, b) {
       return [a, b]
@@ -65,14 +65,7 @@ function validateMessages (settings, initial) {
       return pair[1]
     }),
     pull.asyncMap(function (pair, callback) {
-      // If a is null (first in stream), compare b with initial
-      if (!pair[0]) {
-        if (mMessage.identical(pair[1], initial)) {
-          return callback(null, pair[1])
-        } else {
-          return callback(new Error('First message in copied stream does not match.'))
-        }
-      }
+      debugger
       mMessage.validate(settings, pair[1], pair[0], function (err) {
         return callback(err, pair[1])
       })
