@@ -65,7 +65,6 @@ function validateMessages (settings) {
       return pair[1]
     }),
     pull.asyncMap(function (pair, callback) {
-      debugger
       mMessage.validate(settings, pair[1], pair[0], function (err) {
         return callback(err, pair[1])
       })
@@ -83,13 +82,13 @@ function formatMessages (settings) {
         v: [settings.keys.publicKey, message.chain_id],
         peek: 'last'
       }, function (err, prev) {
-        mMessage.create(settings, message, prev.value, function (err, message) {
+        mMessage.format(settings, message, prev.value, function (err, message) {
           last = message
           callback(err, message)
         })
       })
     } else {
-      mMessage.create(settings, message, last, function (err, message) {
+      mMessage.format(settings, message, last, function (err, message) {
         last = message
         callback(err, message)
       })
