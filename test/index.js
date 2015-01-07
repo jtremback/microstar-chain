@@ -110,33 +110,64 @@ function tests (keys) {
     }]
   })
 
-  test('copy', function (t) {
-    var initial = dbContents[2].value
-    var values = [dbContents[2].value, dbContents[0].value, dbContents[1].value]
+  test('validate', function (t) {
+    t.plan(1)
+
+    var messages = [{
+      chain_id: 'holiday-carols:2014',
+      content: 'Fa',
+      previous: null,
+      pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+      sequence: 0,
+      signature: 'Cs8s0zZgqE/Tp+DCFDXuMYA6mNUtPTFGf//5rENPCx37g3L7BFhz0pBJ06GFK5E1i3C6o5H9BgX/Ltppf5EFBQ==',
+      timestamp: 1418804138168,
+      type: 'holiday-carols:syllable'
+    }, {
+      chain_id: 'holiday-carols:2014',
+      content: 'La',
+      previous: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==',
+      pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+      sequence: 1,
+      signature: '/v1TqoggUpzuFx5sJ5jirlQsBOpGQBb1DJwP4ue1S5LzqKXIvZvlFe/WOLjyQTKXkqw9uQo2NH7eJPq4E7HbAQ==',
+      timestamp: 1418804138169,
+      type: 'holiday-carols:syllable'
+    }, {
+      chain_id: 'holiday-carols:2014',
+      content: 'Laa',
+      previous: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==',
+      pub_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+      sequence: 2,
+      signature: '+2r2xOcwEsP/h2inzDYx3OX2jk+03Zjnhp7pdagNcDFAE/fhdTX4Zmdx+Vi+divPumjIvHQYNSzy4qBI9c4dAQ==',
+      timestamp: 1418804138170,
+      type: 'holiday-carols:syllable'
+    }]
 
     pull(
-      pull.values(values),
-      mChain.copy({
+      pull.values([messages[1], messages[2]]),
+      mChain.validate({
         crypto: mCrypto,
         keys: keys,
-        db: db2,
+        db: db1,
         indexes: mChain.indexes
-      }, initial, function (err) {
-        t.error(err)
-
-        pull(
-          pl.read(db2),
-          pull.collect(function (err, arr) {
-            t.error(err)
-            t.deepEqual(arr, dbContents, '.write(db, indexes)')
-            t.end()
-          })
-        )
+      }, messages[0]),
+      pull.collect(function (err, arr) {
+        if (err) { throw err }
+        t.deepEqual(arr, [messages[1], messages[2]], 'Partial chain with supplied initial message.')
       })
     )
+
+    // pull(
+    //   pull.values([messages[1], messages[2]]),
+    //   mChain.validate({
+    //     crypto: mCrypto,
+    //     keys: keys,
+    //     db: db1,
+    //     indexes: mChain.indexes
+    //   }),
+    //   pull.collect(function (err, arr) {
+    //     if (err) { throw err }
+    //     t.deepEqual(arr, [messages[1], messages[2]], 'Partial chain with initial message from db.')
+    //   })
+    // )
   })
-
-//   test('read', function (t) {
-
-//   })
 }
