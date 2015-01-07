@@ -94,45 +94,10 @@ function validate (settings, initial) {
 }
 
 // This will error on the first invalid message
-function formatOrValidate1 (settings, op, initial) {
-  var last
-  return pull.asyncMap(function (message, callback) {
-    if (!last) { // If this is the first time this stream has run
-      if (initial !== undefined) { // If initial message is supplied
-        op(settings, message, initial, function (err, message) {
-          last = message
-          callback(err, message)
-        })
-      } else { // Get previous message from db
-        llibrarian.readOne(settings, {
-          k: ['pub_key', 'chain_id', 'sequence'],
-          v: [settings.keys.publicKey, message.chain_id],
-          peek: 'last'
-        }, function (err, prev) {
-          // Message will either be validated with the prev message from db,
-          // or with null if it does not exist (starting a new chain)
-          op(settings, message, prev && prev.value, function (err, message) {
-            last = message
-            callback(err, message)
-          })
-        })
-      }
-    } else { // If the stream has run before, use message from then
-      op(settings, message, last, function (err, message) {
-        last = message
-        callback(err, message)
-      })
-    }
-  })
-}
-
-// This will error on the first invalid message
 function formatOrValidate (settings, op, initial) {
   var last
   return pull.asyncMap(function (message, callback) {
-    debugger
     op(settings, message, last || initial, function (err, message) {
-      debugger
       last = message
       callback(err, message)
     })
