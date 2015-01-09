@@ -2,30 +2,19 @@
 
 var mMessage = require('../microstar-message')
 var llibrarian = require('../level-librarian')
-var pairs = require('pull-pairs')
 var pull = require('pull-stream')
 
-module.exports = function (settings) {
-  return {
-    read: llibrarian.read.bind(null, settings),
-    write: write.bind(null, settings),
-    copy: copy.bind(null, settings),
-    validate: validate.bind(null, settings),
-    format: format.bind(null, settings),
-    sequential: sequential.bind(null, settings)
-  }
+module.exports = {
+  read: llibrarian.read,
+  write: write,
+  copy: copy,
+  validate: validate,
+  format: format,
+  sequential: sequential,
+  indexes: [
+    ['pub_key', 'chain_id', 'sequence']
+  ]
 }
-
-module.exports.read = llibrarian.read
-module.exports.write = write
-module.exports.copy = copy
-module.exports.validate = validate
-module.exports.format = format
-module.exports.sequential = sequential
-
-module.exports.indexes = [
-  ['pub_key', 'chain_id', 'sequence']
-]
 
 // settings = {
 //   crypto: JS,
