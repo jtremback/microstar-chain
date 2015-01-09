@@ -1,8 +1,6 @@
 'use strict';
 
 var test = require('tape')
-var r = require('ramda')
-var rimraf = require('rimraf')
 var mChain = require('../')
 var mCrypto = require('../../microstar-crypto')
 var level = require('level-test')()
@@ -11,11 +9,7 @@ var pl = require('pull-level')
 
 
 var dbContents
-rimraf.sync('./test.db')
 var db1 = level('./test1.db', { valueEncoding: 'json' })
-
-rimraf.sync('./test2.db')
-var db2 = level('./test2.db', { valueEncoding: 'json' })
 
 mCrypto.keys('h4dfDIR+i3JfCw1T2jKr/SS/PJttebGfMMGwBvhOzS4=', function (err, keys) {
   tests(keys)
