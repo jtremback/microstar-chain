@@ -6,7 +6,9 @@ var pull = require('pull-stream')
 
 module.exports = {
   read: llibrarian.read,
+  readOne: llibrarian.readOne,
   write: write,
+  writeOne: llibrarian.makeWriteOne(write),
   copy: copy,
   validate: validate,
   format: format,
