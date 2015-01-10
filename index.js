@@ -38,18 +38,6 @@ function write (settings, callback) {
   )
 }
 
-// Saves messages without formatting, but with validation
-// against past messages
-function copy (settings, initial, callback) {
-  return pull(
-    validate(settings, initial),
-    pull.asyncMap(function (message, callback) {
-      mMessage.makeDoc(settings, message, callback)
-    }),
-    llibrarian.write(settings, callback)
-  )
-}
-
 // This outputs a sequential stream of messages suitable for serialization
 // or validation.
 function sequential (settings, pub_key, chain_id, sequence) {
@@ -75,6 +63,17 @@ function sequential (settings, pub_key, chain_id, sequence) {
   )
 }
 
+// Saves messages without formatting, but with validation
+// against past messages
+function copy (settings, initial, callback) {
+  return pull(
+    validate(settings, initial),
+    pull.asyncMap(function (message, callback) {
+      mMessage.makeDoc(settings, message, callback)
+    }),
+    llibrarian.write(settings, callback)
+  )
+}
 
 function format (settings, initial) {
   return formatOrValidate(settings, mMessage.format, initial)
