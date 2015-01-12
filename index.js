@@ -14,7 +14,7 @@ module.exports = {
   format: format,
   sequential: sequential,
   indexes: [
-    ['pub_key', 'chain_id', 'sequence']
+    ['public_key', 'chain_id', 'sequence']
   ]
 }
 
@@ -40,17 +40,17 @@ function write (settings, callback) {
 
 // This outputs a sequential stream of messages suitable for serialization
 // or validation.
-function sequential (settings, pub_key, chain_id, sequence) {
+function sequential (settings, public_key, chain_id, sequence) {
   var query
   if (sequence) {
     query = {
-      k: ['pub_key', 'chain_id', 'sequence'],
-      v: [pub_key, chain_id, [sequence, null]]
+      k: ['public_key', 'chain_id', 'sequence'],
+      v: [public_key, chain_id, [sequence, null]]
     }
   } else { // If no sequence arg, get all
     query = {
-      k: ['pub_key', 'chain_id', 'sequence'],
-      v: [pub_key, chain_id]
+      k: ['public_key', 'chain_id', 'sequence'],
+      v: [public_key, chain_id]
     }
   }
 
