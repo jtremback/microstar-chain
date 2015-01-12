@@ -60,51 +60,51 @@ function tests (keys) {
 
 
     dbContents = [{
-      key: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'La',
-        previous: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==',
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 1,
-        signature: '/v1TqoggUpzuFx5sJ5jirlQsBOpGQBb1DJwP4ue1S5LzqKXIvZvlFe/WOLjyQTKXkqw9uQo2NH7eJPq4E7HbAQ==',
-        timestamp: 1418804138169,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'GiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'Laa',
-        previous: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==',
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 2,
-        signature: '+2r2xOcwEsP/h2inzDYx3OX2jk+03Zjnhp7pdagNcDFAE/fhdTX4Zmdx+Vi+divPumjIvHQYNSzy4qBI9c4dAQ==',
-        timestamp: 1418804138170,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'Fa',
-        previous: null,
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 0,
-        signature: 'Cs8s0zZgqE/Tp+DCFDXuMYA6mNUtPTFGf//5rENPCx37g3L7BFhz0pBJ06GFK5E1i3C6o5H9BgX/Ltppf5EFBQ==',
-        timestamp: 1418804138168,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ0ÿLWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w==ÿ',
-      value: 'LWTQmsJ1E9fu+gSXDM03ckBXieL9/K8Jl2claIRcC6FFX5WYd1ojDsgo6KK1GafCinq2lAQlsIeVtU4RSpYL1w=='
-    }, {
-      key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿ31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g==ÿ',
-      value: '31+k7zPSRtH22OZxA4RXQRNQJ42gay0LNcGSUt19JhS/RElqw/O28+eRUQQdKJvSiQNjU1I5hyHf9OG7I1Np3g=='
-    }, {
-      key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿGiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA==ÿ',
-      value: 'GiOiA+oDfBMpk1EO3GpedGHtI3uMUbnfmsXvy5hQlLy2lKQhgIYxUyOAJRH8dBGPZe3Y8NErr6k7umgEF3pBtA=='
-    }]
+  key: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==',
+  value: {
+    chain_id: 'holiday-carols:2014',
+    content: 'Fa',
+    previous: null,
+    public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+    sequence: 0,
+    signature: '8qq7OacU+0dvBjgjwCR60l4PGekmr9Dd/F8XPmSBCvJdJ4bk9Raa0/AGVJx1r9ABIR4M19Qq7BQbw+aQGHNwAQ==',
+    timestamp: 1418804138168,
+    type: 'holiday-carols:syllable'
+  }
+}, {
+  key: 'vB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw==',
+  value: {
+    chain_id: 'holiday-carols:2014',
+    content: 'Laa',
+    previous: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==',
+    public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+    sequence: 2,
+    signature: 'WHu819414rDA3e4mgHijrcEGa7FEjpaC/FJMuu5fXzcEgqFe655tdUxbNEuZj9Jyon1WhLOJDGOHIJ8wsXY5AA==',
+    timestamp: 1418804138170,
+    type: 'holiday-carols:syllable'
+  }
+}, {
+  key: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==',
+  value: {
+    chain_id: 'holiday-carols:2014',
+    content: 'La',
+    previous: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==',
+    public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
+    sequence: 1,
+    signature: 'pitLmr//o8tWcsD5qgj87aC024H/PsPeFzwmM9w8hrQdDqSRHnzdBc+KIoQ9Zwrqc4A+M++jo7dhcuUy9Xp4CQ==',
+    timestamp: 1418804138169,
+    type: 'holiday-carols:syllable'
+  }
+}, {
+  key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ0ÿsvQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==ÿ',
+  value: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ=='
+}, {
+  key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿzcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==ÿ',
+  value: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q=='
+}, {
+  key: 'ÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿvB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw==ÿ',
+  value: 'vB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw=='
+}]
   })
 
   var messages = [{

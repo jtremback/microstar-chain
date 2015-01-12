@@ -11,7 +11,8 @@ module.exports = {
   writeOne: llibrarian.makeWriteOne(write),
   copy: copy,
   validate: validate,
-  format: format,
+  makeEnvelopes: makeEnvelopes,
+  makeDocs: makeDocs,
   sequential: sequential,
   indexes: [
     ['public_key', 'chain_id', 'sequence']
@@ -33,7 +34,8 @@ module.exports = {
 // Formats messages and then writes them to db
 function write (settings, callback) {
   return pull(
-    format(settings),
+    makeEnvelopes(settings),
+    makeDocs(settings),
     llibrarian.write(settings, callback)
   )
 }
@@ -54,40 +56,39 @@ function sequential (settings, public_key, chain_id, sequence) {
     }
   }
 
-  return pull(
-    llibrarian.read(settings, query),
-    // Strip off key for transmission
-    pull.map(function (doc) {
-      return doc.value
-    })
-  )
+  return llibrarian.read(settings, query)
 }
 
-// Saves messages without formatting, but with validation
+// Saves messages without making envelopes, but with validation
 // against past messages
 function copy (settings, initial, callback) {
   return pull(
     validate(settings, initial),
-    pull.asyncMap(function (message, callback) {
-      mMessage.makeDoc(settings, message, callback)
-    }),
+    makeDocs(settings),
     llibrarian.write(settings, callback)
   )
 }
 
-function format (settings, initial) {
-  return formatOrValidate(settings, mMessage.format, initial)
+function makeDocs (settings) {
+  return pull.asyncMap(function (message, callback) {
+    mMessage.makeDoc(settings, message, callback)
+  })
+}
+
+function makeEnvelopes (settings, initial) {
+  var last
+  return pull.asyncMap(function (message, callback) {
+    mMessage.makeEnvelope(settings, message, last || initial, function (err, message) {
+      last = message
+      return callback(err, message)
+    })
+  })
 }
 
 function validate (settings, initial) {
-  return formatOrValidate(settings, mMessage.validate, initial)
-}
-
-// This will error on the first invalid message
-function formatOrValidate (settings, op, initial) {
   var last
   return pull.asyncMap(function (message, callback) {
-    op(settings, message, last || initial, function (err, message) {
+    mMessage.validate(settings, message, last || initial, function (err, message) {
       last = message
       callback(err, message)
     })
