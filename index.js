@@ -40,6 +40,16 @@ function write (settings, callback) {
   )
 }
 
+function read (settings, query) {
+  return pull(
+    llibrarian.read(settings, query),
+    pull.map(function (item) {
+      // Get out of doc format
+      return item.value
+    })
+  )
+}
+
 // This outputs a sequential stream of messages suitable for serialization
 // or validation.
 function sequential (settings, public_key, chain_id, sequence) {
@@ -56,7 +66,7 @@ function sequential (settings, public_key, chain_id, sequence) {
     }
   }
 
-  return llibrarian.read(settings, query)
+  return read(settings, query)
 }
 
 // Saves messages without making envelopes, but with validation
