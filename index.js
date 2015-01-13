@@ -11,8 +11,9 @@ module.exports = {
   writeOne: llibrarian.makeWriteOne(write),
   copy: copy,
   validate: validate,
-  makeEnvelopes: makeEnvelopes,
-  makeDocs: makeDocs,
+  createSequences: createSequences,
+  createEnvelopes: createEnvelopes,
+  createDocs: createDocs,
   sequential: sequential,
   indexes: [
     ['public_key', 'chain_id', 'sequence']
@@ -34,8 +35,9 @@ module.exports = {
 // Formats messages and then writes them to db
 function write (settings, callback) {
   return pull(
-    makeEnvelopes(settings),
-    makeDocs(settings),
+    createSequences(settings),
+    createEnvelopes(settings),
+    createDocs(settings),
     llibrarian.write(settings, callback)
   )
 }
@@ -74,25 +76,9 @@ function sequential (settings, public_key, chain_id, sequence) {
 function copy (settings, initial, callback) {
   return pull(
     validate(settings, initial),
-    makeDocs(settings),
+    createDocs(settings),
     llibrarian.write(settings, callback)
   )
-}
-
-function makeDocs (settings) {
-  return pull.asyncMap(function (message, callback) {
-    mMessage.makeDoc(settings, message, callback)
-  })
-}
-
-function makeEnvelopes (settings, initial) {
-  var last
-  return pull.asyncMap(function (message, callback) {
-    mMessage.makeEnvelope(settings, message, last || initial, function (err, message) {
-      last = message
-      return callback(err, message)
-    })
-  })
 }
 
 function validate (settings, initial) {
@@ -104,3 +90,28 @@ function validate (settings, initial) {
     })
   })
 }
+
+function createEnvelopes (settings, initial) {
+  var last
+  return pull.asyncMap(function (message, callback) {
+    mMessage.createEnvelope(settings, message, last || initial, function (err, message) {
+      last = message
+      return callback(err, message)
+    })
+  })
+}
+
+function createSequences (settings) {
+  var last
+  return pull.map(function (message) {
+    last = mMessage.createSequence(settings, message, last)
+    return last
+  })
+}
+
+function createDocs (settings) {
+  return pull.asyncMap(function (message, callback) {
+    mMessage.createDoc(settings, message, callback)
+  })
+}
+
