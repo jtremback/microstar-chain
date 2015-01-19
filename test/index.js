@@ -4,12 +4,17 @@ var test = require('tape')
 var mChain = require('../')
 var mCrypto = require('../../microstar-crypto')
 var level = require('level-test')()
+// var level = require('level')
+// var rimraf = require('rimraf')
+// rimraf.sync('./test1.db')
 var pull = require('pull-stream')
 var pl = require('pull-level')
+var async = require('async')
 
 
 var dbContents
 var db1 = level('./test1.db', { valueEncoding: 'json' })
+
 
 mCrypto.keys('h4dfDIR+i3JfCw1T2jKr/SS/PJttebGfMMGwBvhOzS4=', function (err, keys) {
   tests(keys)
@@ -42,22 +47,29 @@ function tests (keys) {
 
   test('write', function (t) {
 
-    pull(
-      pull.values(raw_messages),
-      mChain.write(settings, function (err) {
-        t.error(err)
-
+    async.series([
+      function (callback) {
         pull(
-          pl.read(db1),
-          pull.collect(function (err, arr) {
-            t.error(err)
-            t.deepEqual(arr, dbContents, '.write(db, indexes)')
-            t.end()
-          })
+          pull.values([raw_messages[0], raw_messages[1]]),
+          mChain.write(settings, callback)
         )
-      })
-    )
-
+      },
+      function (callback) {
+        setTimeout(function () {
+          mChain.writeOne(settings, raw_messages[2], callback)
+        }, 1000)
+      }
+    ], function (err) {
+      if (err) { throw err }
+      pull(
+        pl.read(db1),
+        pull.collect(function (err, arr) {
+          t.error(err)
+          t.deepEqual(arr, dbContents, '.write(db, indexes)')
+          t.end()
+        })
+      )
+    })
 
     dbContents = [{
       key: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==',
