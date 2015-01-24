@@ -11,8 +11,6 @@ module.exports = {
   writeOne: llibrarian.makeWriteOne(write),
   copy: copy,
   validate: validate,
-  // createSequences: createSequences,
-  // createEnvelopes: createEnvelopes,
   createDocs: createDocs,
   sequential: sequential,
   indexes: [
@@ -32,30 +30,12 @@ module.exports = {
 //   chain_id: String
 // }
 
-// // Formats messages and then writes them to db
-// function write (settings, callback) {
-//   return pull(
-//     createSequences(settings),
-//     createEnvelopes(settings),
-//     createDocs(settings),
-//     llibrarian.write(settings, callback)
-//   )
-// }
-
 // Formats messages and then writes them to db
-function write (settings, a, b) {
+function write (settings, callback) {
   var previous
-  var initial
-  var callback
-  if (typeof a === 'function') {
-    callback = a
-  } else {
-    initial = a
-    callback = b
-  }
   return pull(
     pull.asyncMap(function (message, callback) {
-      if (!previous && !initial) {
+      if (!previous) {
         // Get previous message from db
         llibrarian.readOne(settings, {
           k: ['public_key', 'chain_id', 'sequence'],
@@ -63,29 +43,21 @@ function write (settings, a, b) {
           peek: 'last'
         }, function (err, prev) {
           if (prev) { prev = prev.value }
-          format(settings, message, prev || initial, function (err, message) {
+          mMessage.createEnvelope(settings, message, prev, function (err, message) {
             previous = message
-            callback(err, message)
+            return callback(err, message)
           })
         })
       } else {
-        format(settings, message, previous || initial, function (err, message) {
+        mMessage.createEnvelope(settings, message, previous, function (err, message) {
           previous = message
-          callback(err, message)
+          return callback(err, message)
         })
       }
     }),
     createDocs(settings),
     llibrarian.write(settings, callback)
   )
-}
-
-function format (settings, message, prev, callback) {
-  message = mMessage.createSequence(settings, message, prev)
-  mMessage.createEnvelope(settings, message, prev, function (err, message) {
-    prev = message
-    return callback(err, message, prev)
-  })
 }
 
 function read (settings, query) {
@@ -128,57 +100,14 @@ function copy (settings, initial, callback) {
 }
 
 function validate (settings, initial) {
-  var prev
+  var previous
   return pull.asyncMap(function (message, callback) {
-    mMessage.validate(settings, message, prev || initial, function (err, message) {
-      prev = message
+    mMessage.validate(settings, message, previous || initial, function (err, message) {
+      previous = message
       callback(err, message)
     })
   })
 }
-
-// function createEnvelopes (settings, initial) {
-//   var prev
-//   return pull.asyncMap(function (message, callback) {
-//     mMessage.createEnvelope(settings, message, prev || initial, function (err, message) {
-//       prev = message
-//       return callback(err, message)
-//     })
-//   })
-// }
-
-// function createSequences (settings, initial) {
-//   var prev
-//   return pull.map(function (message) {
-//     message = mMessage.createSequence(settings, message, prev)
-//     prev = message
-//     return message
-//   })
-// }
-
-// function createSequences (settings, initial) {
-//   var prev
-//   return pull.asyncMap(function (message, callback) {
-//     // prev = mMessage.createSequence(settings, message, prev)
-//     // return prev
-
-//     if (!prev && !initial) {
-//       // Get previous message from db
-//       llibrarian.readOne(settings, {
-//         k: ['pub_key', 'chain_id', 'sequence'],
-//         v: [settings.keys.publicKey, message.chain_id],
-//         peek: 'last'
-//       }, function (err, last) {
-//         message = mMessage.createSequence(settings, message, last)
-//         prev = message
-//         callback(err, message)
-//       })
-//     } else {
-//       message = mMessage.createSequence(settings, message, prev || initial)
-//       callback(null, message)
-//     }
-//   })
-// }
 
 function createDocs (settings) {
   return pull.asyncMap(function (message, callback) {
