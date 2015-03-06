@@ -5,15 +5,15 @@ var llibrarian = require('../level-librarian')
 var pull = require('pull-stream')
 
 module.exports = {
-  read: llibrarian.read,
-  readOne: llibrarian.readOne,
+  read: read,
+  readOne: llibrarian.makeReadOne(read),
   write: write,
   writeOne: llibrarian.makeWriteOne(write),
   copy: copy,
   validate: validate,
   createDocs: createDocs,
   sequential: sequential,
-  indexes: [
+  index_defs: [
     ['public_key', 'chain_id', 'sequence']
   ]
 }

@@ -3,16 +3,43 @@
 var test = require('tape')
 var mChain = require('../')
 var mCrypto = require('../../microstar-crypto')
-var level = require('level-test')()
-// var level = require('level')
-// var rimraf = require('rimraf')
-// rimraf.sync('./test1.db')
 var pull = require('pull-stream')
 var pl = require('pull-level')
 var async = require('async')
+var crypto = require('crypto')
 
+// var level = require('level-test')()
+var level = require('level')
+var rimraf = require('rimraf')
+rimraf.sync('./test1.db')
 var db = level('./test1.db', { valueEncoding: 'json' })
 
+var trace = require('get-trace')
+
+function tracify (t) {
+  function attach (func) {
+    return function () {
+      var args = []
+      for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i])
+      }
+      args.push(trace(2))
+
+      return func.apply(null, args)
+    }
+  }
+  return {
+    equal: attach(t.equal),
+    deepEqual: attach(t.deepEqual),
+    error: attach(t.error),
+    end: t.end,
+    plan: t.plan
+  }
+}
+
+function sha1hex (input) {
+  return crypto.createHash('sha1').update(JSON.stringify(input)).digest('hex')
+}
 
 mCrypto.keys('h4dfDIR+i3JfCw1T2jKr/SS/PJttebGfMMGwBvhOzS4=', function (err, keys) {
   tests(keys)
@@ -23,7 +50,7 @@ function tests (keys) {
     crypto: mCrypto,
     keys: keys,
     db: db,
-    indexes: mChain.indexes
+    index_defs: mChain.index_defs
   }
 
   var raw_messages = [{
@@ -44,14 +71,16 @@ function tests (keys) {
   }]
 
   test('write', function (t) {
-
+    t = tracify(t)
     async.series([
+      // This writes a stream of two messages to the db.
       function (callback) {
         pull(
           pull.values([raw_messages[0], raw_messages[1]]),
           mChain.write(settings, callback)
         )
       },
+      // This writes another, after the first two are done.
       function (callback) {
         setTimeout(function () {
           mChain.writeOne(settings, raw_messages[2], callback)
@@ -63,60 +92,12 @@ function tests (keys) {
         pl.read(db),
         pull.collect(function (err, arr) {
           t.error(err)
-          t.deepEqual(arr, db_contents, '.write(db, indexes)')
+          t.deepEqual(sha1hex(arr), '752a2fe53263889d21c01c4807664d94f32ab3bb')
           t.end()
         })
       )
     })
-
-    var db_contents = [{
-      key: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'Fa',
-        previous: null,
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 0,
-        signature: '8qq7OacU+0dvBjgjwCR60l4PGekmr9Dd/F8XPmSBCvJdJ4bk9Raa0/AGVJx1r9ABIR4M19Qq7BQbw+aQGHNwAQ==',
-        timestamp: 1418804138168,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'vB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'Laa',
-        previous: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==',
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 2,
-        signature: 'WHu819414rDA3e4mgHijrcEGa7FEjpaC/FJMuu5fXzcEgqFe655tdUxbNEuZj9Jyon1WhLOJDGOHIJ8wsXY5AA==',
-        timestamp: 1418804138170,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==',
-      value: {
-        chain_id: 'holiday-carols:2014',
-        content: 'La',
-        previous: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==',
-        public_key: 'N3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=',
-        sequence: 1,
-        signature: 'pitLmr//o8tWcsD5qgj87aC024H/PsPeFzwmM9w8hrQdDqSRHnzdBc+KIoQ9Zwrqc4A+M++jo7dhcuUy9Xp4CQ==',
-        timestamp: 1418804138169,
-        type: 'holiday-carols:syllable'
-      }
-    }, {
-      key: 'ÿiÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ0ÿsvQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ==ÿ',
-      value: 'svQZgkOrqLQb4JEO/WidhH/Doyn5AK6pGHHVWqmRaiFIG9qmtpBP2YDZMTyGfMeSTGxk0WoPz0QNMOaLUCZeqQ=='
-    }, {
-      key: 'ÿiÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ1ÿzcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q==ÿ',
-      value: 'zcSN5BdLPyZMLwsN0NkOWXjNHbnss2YRRpNhdA63V+mliYjCTj3ySkbLIGcy4Jn9c5oHdQI8eMjdiHgkzZ7e3Q=='
-    }, {
-      key: 'ÿiÿpublic_key,chain_id,sequenceÿN3DyaY1o1EmjPLUkRQRu41/g/xKe/CR/cCmatA78+zY=7XuCMMWN3y/r6DeVk7YGY8j/0rWyKm3TNv3S2cbmXKk=ÿholiday-carols:2014ÿ2ÿvB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw==ÿ',
-      value: 'vB2XSqXzalwgQkaksvcz5S9eI6emIQ4iSRMlDJAt/obxuBMUxp1MJUJJBotLtHYK0LTTSuuuV9aAW1oY7yhYcw=='
-    }]
   })
-
   var messages = [{
       chain_id: 'holiday-carols:2014',
       content: 'Fa',
@@ -149,6 +130,7 @@ function tests (keys) {
     }]
 
   test('validate', function (t) {
+    t = tracify(t)
     t.plan(2)
 
 
@@ -172,6 +154,7 @@ function tests (keys) {
   })
 
   test('sequential', function (t) {
+    t = tracify(t)
     t.plan(2)
 
     pull(
