@@ -14,7 +14,8 @@
     "pull-level": "^1.2.0",
     "pull-pairs": "^1.0.0",
     "pull-stream": "^2.26.0",
-    "ramda": "^0.8.0"
+    "ramda": "^0.8.0",
+    "type-check": "^0.3.1"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -26,7 +27,8 @@
     "tape": "^3.0.3"
   },
   "scripts": {
-    "test": "node test/"
+    "test": "node test/",
+    "debug-test": "forever -c \"node --debug-brk\" test/"
   },
   "repository": {
     "type": "git",

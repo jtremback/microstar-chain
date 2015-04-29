@@ -3,6 +3,7 @@
 var mMessage = require('../microstar-message')
 var llibrarian = require('../level-librarian')
 var pull = require('pull-stream')
+var typeCheck = require('type-check').typeCheck
 
 module.exports = {
   read: read,
@@ -68,9 +69,29 @@ function processMessages (settings, func, public_key) {
   })
 }
 
+function createDocs (settings) {
+  return pull.asyncMap(function (message, callback) {
+    mMessage.createDoc(settings, message, callback)
+  })
+}
+
 // Formats messages and then writes them to db
 function write (settings, callback) {
   return pull(
+    pull.map(function (data) {
+      var type = [
+      '{ type: String,',
+        'chain_id: String,',
+        'timestamp: Number,',
+        'content: *,',
+        '... }'].join(' ')
+
+      if (!typeCheck(type, data)) {
+        throw new Error('Invalid message format')
+      }
+
+      return data
+    }),
     createEnvelopes(settings),
     createDocs(settings),
     llibrarian.write(settings, callback)
@@ -81,26 +102,26 @@ function write (settings, callback) {
 // against past messages
 function copy (settings, callback) {
   return pull(
+    pull.map(function (data) {
+      var type = [
+      '{ type: String,',
+        'chain_id: String,',
+        'timestamp: Number,',
+        'previous: Maybe String,',
+        'sequence: Number,',
+        'signature: String,',
+        'content: *,',
+        'public_key: String, ... }'].join(' ')
+
+      if (!typeCheck(type, data)) {
+        throw new Error('Invalid message format')
+      }
+      return data
+    }),
     validate(settings),
     createDocs(settings),
     llibrarian.write(settings, callback)
   )
-}
-
-// function validate (settings, initial) {
-//   var previous
-//   return pull.asyncMap(function (message, callback) {
-//     mMessage.validate(settings, message, previous || initial, function (err, message) {
-//       previous = message
-//       callback(err, message)
-//     })
-//   })
-// }
-
-function createDocs (settings) {
-  return pull.asyncMap(function (message, callback) {
-    mMessage.createDoc(settings, message, callback)
-  })
 }
 
 function read (settings, query) {
